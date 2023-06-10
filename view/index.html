@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment</title>
+</head>
+<body>
+    <form onsubmit="onsub(event)">
+        <label for="username"></label>
+        <input type="text" name="username" id="username">
+        <label for="phonenumber"></label>
+        <input type="tel" name="phonenumber" id="phonenumber">
+        <label for="email"></label>
+        <input type="email" name="email" id="email">
+        <button type="submit">Submit</button>
+    </form>
+    <button id="editbtn" type="submit">Edit-Submit</button><h4>Click Edit-Submit button only after clicking Edit button</h4>
+
+    <ul id="userlist"></ul>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script>
+        async function onsub(event) {
+            event.preventDefault()
+
+            const name = event.target.username.value
+            const phonenumber = event.target.phonenumber.value
+            const email = event.target.email.value
+
+            const obj = {
+                name,
+                phonenumber,
+                email
+            }
+
+            await axios.post('http://localhost:3000/',obj)
+            showusers(obj)
+        }
+
+        window.addEventListener('DOMContentLoaded',async()=> {
+            const users = await axios.get('http://localhost:3000/get-users')
+            for (let i=0; i<users.data.length; i++){
+                console.log(users.data[i],">>>>>>>>>>>>>>>>>>>>>>.")
+
+                showusers(users.data[i])
+            }
+        })
+
+        function showusers(user){
+            let childelement = `<li id ="${user.id}">${user.name} ${user.email} ${user.phonenumber}
+                <button type ='submit' onclick="deleted(${user.id})">Delete</button>
+                <button type ='submit' onclick="edited(${user.id}, '${user.name}', '${user.email}', '${user.phonenumber}')">Edit</button>
+            </li>`
+
+            const parent = document.getElementById('userlist')
+            parent.innerHTML = parent.innerHTML + childelement
+
+        }
+
+        function deleted(id){
+            document.getElementById(id).remove()
+            axios.delete(`http://localhost:3000/delete-user/${id}`)
+        }
+
+        function edited(id,name,email,phonenumber){
+            document.getElementById('username').value = name
+            document.getElementById('phonenumber').value = phonenumber
+            document.getElementById('email').value = email
+            document.getElementById(id).remove()
+
+            // Save the edited user data when the submit button is clicked
+            const submitButton = document.getElementById('editbtn')
+            submitButton.onclick = () => saveEditedUser(id)
+        }
+
+        async function saveEditedUser(id) {
+            const name = document.getElementById('username').value
+            const phonenumber = document.getElementById('phonenumber').value
+            const email = document.getElementById('email').value
+
+            const obj = {
+                name,
+                phonenumber,
+                email
+            }
+            console.log(obj,'>>>>>>>>>>>>>>>>>>>>>>>>>>oBBBBBBBJJJJJJJJJJJJ')
+            await axios.put(`http://localhost:3000/edit-user/${id}`, obj)
+            showusers(obj)
+        }
+        
+    </script>
+</body>
+</html>
