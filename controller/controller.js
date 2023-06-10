@@ -20,8 +20,6 @@ const postuser = (req,res)=>{
 }
 
 const deleteuser = (req,res)=>{
-    // console.log(req.params.id,">>>>>>>>>>>>>>>>")
-
     Appointment.destroy({where:{id:req.params.id}}).then(()=>{
         res.json({success:true,message:"deleted successfully"})
     })

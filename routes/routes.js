@@ -12,6 +12,6 @@ router.post('/',controller.postuser)
 
 router.delete('/delete-user/:id',controller.deleteuser)
 
-router.delete('/edit-user/:id',controller.edituser)
+router.put('/edit-user/:id',controller.edituser)
 
 module.exports = router
