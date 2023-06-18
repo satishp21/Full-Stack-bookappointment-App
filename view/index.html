@@ -46,7 +46,7 @@
                 showusers(users.data[i])
             }
         })
-
+        //there might be one that recently added item may not have id in li tag utill screen is refreshed so edit and delete may cause trouble
         function showusers(user){
             let childelement = `<li id ="${user.id}">${user.name} ${user.email} ${user.phonenumber}
                 <button type ='submit' onclick="deleted(${user.id})">Delete</button>
